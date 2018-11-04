@@ -1,0 +1,1373 @@
+package comp_nomail;
+
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JPanel;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.UIManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class SettGui {
+
+	public class Dataclass {// POMOĆNA KLASA ZA SWINGWORKERA
+	String stringtosend;
+	public double[] inputDouble1;
+	public boolean[] inputBool1;
+	public double[] settDouble1;
+	public boolean[] settBool1;
+	public boolean[] outputBool1;
+
+	}// END Dataclass
+
+	// ****** CONSTRUCTOR
+	public SettGui() {
+	vrti();
+	vrti2();
+	}// END CONSTRUCTOR
+
+	// ove sve varijable i getteri i setteri su upitnik???
+	private boolean serijaliziraj;
+	private double ambijentalna;
+	private double deftemp;
+	private double deftime;
+	private double setirandeftemp;
+	
+	private double alarmtemp;
+	private double alarmtime;
+	
+	private double diferencija;
+	private boolean preklopnik;
+	private boolean vrata;
+	private boolean svjetlosklop;
+	private boolean softsvjetlo;
+
+	private boolean kompr;
+	private boolean magnet;
+	private boolean ventilator;
+	private boolean grijac;
+ 	private boolean svjetlo;
+	private boolean alarm;
+
+	// od guiglavni:
+	private boolean settguishow = false;
+	private double setpoint;
+	private String temp;
+	private boolean onoff;
+	private String prikaz;
+	private String naslov;
+	
+	private boolean spoji = true;
+	boolean fliparound = true;
+	
+
+	int i = 2;
+
+	// jButton1.setFocusPainted(false); primjeniti na sve botune
+
+	// S E T T I N G S FRAME
+
+	JFrame frmAllstatSettings;
+
+	JLabel lblAMBI = new JLabel();
+	JLabel label2 = new JLabel();
+	JLabel label_deftime = new JLabel();
+	JLabel label_diff = new JLabel();
+	JLabel lblPrazni1 = new JLabel();
+	JLabel lblNewLabel4 = new JLabel();
+	JLabel lblNewLabel5 = new JLabel();
+	JLabel lblNewLabel6 = new JLabel();
+	JLabel lbl_deftemp = new JLabel();
+	JLabel lblNewLabel_3 = new JLabel();
+	JLabel lblalarmtime = new JLabel();
+	
+
+	JRadioButton rdbtnVrata = new JRadioButton("Door");
+	//JRadioButton rdbtnRasvjeta = new JRadioButton("Lighting");
+	JRadioButton rdbtnPreklopnikOsigura = new JRadioButton("ON/OFF - Safety switch");
+
+	JRadioButton rdbtnKompresor = new JRadioButton("Compressor");
+	JRadioButton rdbtnMagnetniVentil = new JRadioButton("Magnet valve");
+	JRadioButton rdbtnVentilatorIsparivaa = new JRadioButton("Evaporator fan");
+	JRadioButton rdbtnGrijaIsparivaa = new JRadioButton("Evaporator heater");
+	JRadioButton rdbtnRasvjeta_1 = new JRadioButton("Lighting");
+	JRadioButton rdbtnNewRadioButton = new JRadioButton("Alarm");
+	
+	
+// SETT GUI
+	public void vrti() {
+
+	frmAllstatSettings = new JFrame();
+	frmAllstatSettings.setBounds(100, 100, 320, 540);
+	frmAllstatSettings.setResizable(false);
+	frmAllstatSettings.setTitle("ALLSTAT SETTINGS");
+	//frmAllstatSettings.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frmAllstatSettings.addWindowListener(new java.awt.event.WindowAdapter() {
+	@Override
+	public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+	// setVidljiv(false);
+	frmAllstatSettings.setVisible(false);
+
+	}
+	});
+	
+	JPanel panel_postavke = new JPanel(); // POSTAVKE
+	panel_postavke.setBorder(new TitledBorder(null, "Settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	
+	JPanel panel_1 = new JPanel(); // VRIJEDNOSTI
+	panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Value", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+	
+	JPanel panel_2 = new JPanel(); // SKLOPKA I VRATA
+	panel_2.setBorder(new TitledBorder(null, "Inputs", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	
+	JPanel panel_3 = new JPanel(); // IZLAZI
+	panel_3.setBorder(new TitledBorder(null, "Outputs", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	GroupLayout groupLayout = new GroupLayout(frmAllstatSettings.getContentPane());
+	
+	groupLayout.setHorizontalGroup(
+	groupLayout.createParallelGroup(Alignment.LEADING)
+	.addGroup(groupLayout.createSequentialGroup()
+	.addContainerGap()
+	.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+	.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+	.addGroup(groupLayout.createSequentialGroup()
+	.addComponent(panel_postavke, GroupLayout.PREFERRED_SIZE, 188, GroupLayout.PREFERRED_SIZE)
+	.addPreferredGap(ComponentPlacement.RELATED)
+	.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+	.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))
+	.addContainerGap())
+	);
+	
+	groupLayout.setVerticalGroup(
+	groupLayout.createParallelGroup(Alignment.LEADING)
+	.addGroup(groupLayout.createSequentialGroup()
+	.addContainerGap()
+	.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+	.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)	
+	.addComponent(panel_postavke, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+	.addPreferredGap(ComponentPlacement.RELATED)
+	.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+	.addPreferredGap(ComponentPlacement.RELATED)
+	.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+	.addContainerGap())
+	);
+	panel_1.setLayout(new GridLayout(4, 0, 0, 0));
+	
+	GridBagLayout gbl_panel_2 = new GridBagLayout();
+	gbl_panel_2.columnWidths = new int[]{0, 0};
+	gbl_panel_2.rowHeights = new int[]{0, 0, 0};
+	gbl_panel_2.columnWeights = new double[]{0.0, Double.MIN_VALUE};
+	gbl_panel_2.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+	panel_2.setLayout(gbl_panel_2);
+	
+	GridBagLayout gbl_panel_3 = new GridBagLayout();
+	gbl_panel_3.columnWidths = new int[] { 0, 0, 0 };
+	gbl_panel_3.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+	gbl_panel_3.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+	gbl_panel_3.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+	panel_3.setLayout(gbl_panel_3);
+	
+	// 2 BOTUNA:
+
+	GridBagConstraints gbc_rdbtnPreklopnikOsigura = new GridBagConstraints();
+	gbc_rdbtnPreklopnikOsigura.anchor = GridBagConstraints.WEST;
+	gbc_rdbtnPreklopnikOsigura.insets = new Insets(0, 0, 5, 0);
+	gbc_rdbtnPreklopnikOsigura.gridx = 0;
+	gbc_rdbtnPreklopnikOsigura.gridy = 0;
+	panel_2.add(rdbtnPreklopnikOsigura, gbc_rdbtnPreklopnikOsigura);
+	rdbtnPreklopnikOsigura.setEnabled(false);
+	rdbtnPreklopnikOsigura.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);	
+	}
+	/*rdbtnPreklopnikOsigura.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	if (rdbtnPreklopnikOsigura.isSelected()) {
+	setPreklopnik(true);
+	} else {
+	setPreklopnik(false);
+	}
+	}*/
+	});
+	
+
+	GridBagConstraints gbc_rdbtnVrata = new GridBagConstraints();
+	gbc_rdbtnVrata.anchor = GridBagConstraints.WEST;
+	gbc_rdbtnVrata.insets = new Insets(0, 0, 5, 0);
+	gbc_rdbtnVrata.gridx = 0;
+	gbc_rdbtnVrata.gridy = 1;
+	panel_2.add(rdbtnVrata, gbc_rdbtnVrata);
+	rdbtnVrata.setEnabled(false);
+	rdbtnVrata.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);	
+	}
+	/*rdbtnVrata.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	if (rdbtnVrata.isSelected()) {
+	setVrata(true);
+	} else {
+	setVrata(false);
+	}
+	}*/
+	});
+
+	// DONJI BOTUNI - LAMPICE
+
+	rdbtnKompresor.setEnabled(false);
+	rdbtnKompresor.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);
+	/*
+	 * JRadioButton jrb = (JRadioButton) me.getSource(); if
+	 * (!jrb.isEnabled()) {//the JRadioButton is disabled so we
+	 * should enable it //System.out.println("here");
+	 * jrb.setEnabled(true); }
+	 */
+	}
+	});// kraj
+	
+	GridBagConstraints gbc_rdbtnKompresor = new GridBagConstraints();
+	gbc_rdbtnKompresor.anchor = GridBagConstraints.WEST;
+	gbc_rdbtnKompresor.insets = new Insets(0, 0, 5, 0);
+	gbc_rdbtnKompresor.gridx = 0;
+	gbc_rdbtnKompresor.gridy = 0;
+	panel_3.add(rdbtnKompresor, gbc_rdbtnKompresor);
+	if (isKompr()) {
+	rdbtnKompresor.setSelected(true);
+	} else {
+	rdbtnKompresor.setSelected(false);
+	}
+
+	rdbtnMagnetniVentil.setEnabled(false);
+	rdbtnMagnetniVentil.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);
+	/*
+	 * JRadioButton jrb = (JRadioButton) me.getSource(); if
+	 * (!jrb.isEnabled()) {//the JRadioButton is disabled so we
+	 * should enable it //System.out.println("here");
+	 * jrb.setEnabled(true); }
+	 */
+	}
+	});// kraj
+	GridBagConstraints gbc_rdbtnMagnetniVentil = new GridBagConstraints();
+	gbc_rdbtnMagnetniVentil.anchor = GridBagConstraints.WEST;
+	gbc_rdbtnMagnetniVentil.insets = new Insets(0, 0, 5, 0);
+	gbc_rdbtnMagnetniVentil.gridx = 0;
+	gbc_rdbtnMagnetniVentil.gridy = 1;
+	panel_3.add(rdbtnMagnetniVentil, gbc_rdbtnMagnetniVentil);
+	if (isMagnet()) {
+	rdbtnMagnetniVentil.setSelected(true);
+	} else {
+	rdbtnMagnetniVentil.setSelected(false);
+	}
+
+	rdbtnVentilatorIsparivaa.setEnabled(false);
+	rdbtnVentilatorIsparivaa.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);
+	/*
+	 * JRadioButton jrb = (JRadioButton) me.getSource(); if
+	 * (!jrb.isEnabled()) {//the JRadioButton is disabled so we
+	 * should enable it //System.out.println("here");
+	 * jrb.setEnabled(true); }
+	 */
+	}
+	});
+	GridBagConstraints gbc_rdbtnVentilatorIsparivaa = new GridBagConstraints();
+	gbc_rdbtnVentilatorIsparivaa.anchor = GridBagConstraints.WEST;
+	gbc_rdbtnVentilatorIsparivaa.insets = new Insets(0, 0, 5, 0);
+	gbc_rdbtnVentilatorIsparivaa.gridx = 0;
+	gbc_rdbtnVentilatorIsparivaa.gridy = 2;
+	panel_3.add(rdbtnVentilatorIsparivaa, gbc_rdbtnVentilatorIsparivaa);
+	if (isVentilator()) {
+	rdbtnVentilatorIsparivaa.setSelected(true);
+	} else {
+	rdbtnVentilatorIsparivaa.setSelected(false);
+	}
+
+	rdbtnGrijaIsparivaa.setEnabled(false);
+	rdbtnGrijaIsparivaa.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);
+	/*
+	 * JRadioButton jrb = (JRadioButton) me.getSource(); if
+	 * (!jrb.isEnabled()) {//the JRadioButton is disabled so we
+	 * should enable it //System.out.println("here");
+	 * jrb.setEnabled(true); }
+	 */
+	}
+	});// kraj
+	GridBagConstraints gbc_rdbtnGrijaIsparivaa = new GridBagConstraints();
+	gbc_rdbtnGrijaIsparivaa.anchor = GridBagConstraints.WEST;
+	gbc_rdbtnGrijaIsparivaa.insets = new Insets(0, 0, 5, 0);
+	gbc_rdbtnGrijaIsparivaa.gridx = 0;
+	gbc_rdbtnGrijaIsparivaa.gridy = 3;
+	panel_3.add(rdbtnGrijaIsparivaa, gbc_rdbtnGrijaIsparivaa);
+	if (isGrijac()) {
+	rdbtnGrijaIsparivaa.setSelected(true);
+	} else {
+	rdbtnGrijaIsparivaa.setSelected(false);
+	}
+
+	rdbtnRasvjeta_1.setEnabled(false);
+	rdbtnRasvjeta_1.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);
+	/*
+	 * JRadioButton jrb = (JRadioButton) me.getSource(); if
+	 * (!jrb.isEnabled()) {//the JRadioButton is disabled so we
+	 * should enable it //System.out.println("here");
+	 * jrb.setEnabled(true); }
+	 */
+	}
+	});// kraj
+	
+	rdbtnNewRadioButton.setEnabled(false);
+	rdbtnNewRadioButton.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent me) {
+	super.mouseClicked(me);
+	/*
+	 * JRadioButton jrb = (JRadioButton) me.getSource(); if
+	 * (!jrb.isEnabled()) {//the JRadioButton is disabled so we
+	 * should enable it //System.out.println("here");
+	 * jrb.setEnabled(true); }
+	 */
+	}
+	});// kraj
+	
+	// SETTING ANALOGNI DODATNI
+	panel_postavke.setLayout(new GridLayout(0, 1, 0, 0));
+
+	JButton btnVrijemeDefrosta = new JButton("Defrost time");	
+	btnVrijemeDefrosta.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	Analog_ulaz ambi2 = new Analog_ulaz();
+	ambi2.izbor3("Time (minutes) to defrost start");
+	setDeftime(ambi2.getUnos());
+	// label_1.setText(String.valueOf((int)getDeftime()));
+	}
+	});
+	panel_postavke.add(btnVrijemeDefrosta);	
+	
+	JButton botun2 = new JButton("Defrost temperature");
+	botun2.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	Analog_ulaz ambi5 = new Analog_ulaz();
+	ambi5.izbor4("Defrost shut off temperature");
+	setSetirandeftemp(ambi5.getUnos());
+
+	}
+	});
+	panel_postavke.add(botun2);	
+	
+	JButton botun3 = new JButton("Alarm temperature");
+	botun3.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	Analog_ulaz ambi6 = new Analog_ulaz();
+	ambi6.izbor5("Set alarm trigger temperature");
+	setAlarmtemp(ambi6.getUnos());
+
+	}
+	});
+	panel_postavke.add(botun3);
+	
+	JButton botun4 = new JButton("Alarm time");
+	botun4.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	Analog_ulaz ambi6 = new Analog_ulaz();
+	ambi6.izbor6("Set alarm trigger time");
+	setAlarmtime(ambi6.getUnos());
+
+	}
+	});
+	panel_postavke.add(botun4);
+	
+	JButton btnDiferencija_1 = new JButton("Differential");	
+	btnDiferencija_1.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	Analog_ulaz ambi4 = new Analog_ulaz();
+	ambi4.izbor2("Difference");
+	setDiferencija(ambi4.getUnos());
+
+	}
+	});
+	panel_postavke.add(btnDiferencija_1);
+	
+	// SERIJALIZACIJA
+
+	JButton seribotun = new JButton("Save settings");
+	panel_postavke.add(seribotun);
+	seribotun.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	setSerijaliziraj(true);
+	}
+	});
+
+	JButton btnSpremiNovuifru = new JButton("Save new password");	
+	panel_postavke.add(btnSpremiNovuifru);
+	btnSpremiNovuifru.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	Newlog sifra = new Newlog();
+	sifra.zbuksaj();
+	}
+	});
+	
+	JLabel lbldefrosta = new JLabel("Defrost sensor °C");
+	lbldefrosta.setHorizontalAlignment(SwingConstants.CENTER);
+	panel_postavke.add(lbldefrosta);
+	
+	frmAllstatSettings.getContentPane().setLayout(groupLayout);
+	
+	// I LABEL PANEL TREBA PREPRAVITI U JEDNOSTAVNI GRID
+	
+	panel_1.setLayout(new GridLayout(0, 1, 0, 0));
+	
+	panel_1.add(label_deftime);
+	
+	panel_1.add(lbl_deftemp);	
+	
+	panel_1.add(lblNewLabel_3);
+	
+	panel_1.add(lblalarmtime);
+	
+	//label_diff.setText(String.valueOf(getDiferencija()));
+	panel_1.add(label_diff);
+	
+	lblPrazni1.setText("- -");
+	panel_1.add(lblPrazni1);
+	
+	JLabel lblNewLabel5 = new JLabel("- -");
+	panel_1.add(lblNewLabel5);
+	
+	lblNewLabel6.setText(String.valueOf(getDiferencija()));	
+	panel_1.add(lblNewLabel6);
+	
+	
+	}// END VRTI tj. SETTGUI EDT metodu
+
+	// GUIGLAVNI:
+	JFrame frmAllstat;
+	JLabel label_1 = new JLabel("2");
+	JLabel lblNewLabel = new JLabel();
+	
+	
+	
+	//**********
+	
+	
+	
+
+	public void vrti2() {
+	
+	naslov = "Fruit&Vegetables";
+
+	frmAllstat = new JFrame();
+
+	JPanel panel = new JPanel();
+	JPanel panel_1 = new JPanel();
+	JPanel panel_2 = new JPanel();
+	JPanel panel_3 = new JPanel();
+	JPanel panel_4 = new JPanel();
+
+	frmAllstat = new JFrame();
+	frmAllstat.setTitle(naslov);
+	frmAllstat.setResizable(false);
+	frmAllstat.setBounds(100, 100, 320, 520);
+	//frmAllstat.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frmAllstat.addWindowListener(new java.awt.event.WindowAdapter() {
+	
+	@Override
+	public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+	// setVidljiv(false);
+	setSpoji(false);
+	//System.out.println(isSpoji());
+	try {Thread.sleep(1000);} catch (Exception e) {System.out.println(e);}
+	//fliparound = false;	
+	
+	int delay = 1500; //milliseconds
+	  ActionListener taskPerformer = new ActionListener() {
+	      public void actionPerformed(ActionEvent evt) {	    	 
+	    	  setSpoji(false);
+	    	   try {Thread.sleep(1000);} catch (Exception e) {System.out.println(e);}
+	    	  //System.out.println(isSpoji());
+	    	  
+	      }
+	  };
+	  new Timer(delay, taskPerformer).start();
+	
+	System.exit(0);
+
+	}
+	});
+
+	panel_1.setBorder(new TitledBorder(null, "TEMP °C", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	panel_2.setBorder(new TitledBorder(null, "SET", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	panel_3.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
+	GroupLayout groupLayout = new GroupLayout(frmAllstat.getContentPane());
+	groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout
+	.createSequentialGroup().addContainerGap()
+	.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+	.addComponent(panel_4, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+	.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+	.addComponent(panel, GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+	.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+	.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 295, Short.MAX_VALUE))
+	.addContainerGap()));
+	groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
+	.createSequentialGroup().addContainerGap()
+	.addComponent(panel, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+	.addPreferredGap(ComponentPlacement.RELATED)
+	.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE).addGap(1)
+	.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	.addPreferredGap(ComponentPlacement.RELATED)
+	.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE).addGap(11)
+	.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE).addContainerGap()));
+	panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+	// LABEL AMBIJENTALNE TEMPERATURE
+
+	label_1.setHorizontalAlignment(SwingConstants.CENTER);
+	label_1.setFont(new Font("Tahoma", Font.BOLD, 60));
+	label_1.setText(String.valueOf(getAmbijentalna()));
+	panel_1.add(label_1);
+	panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+	// LABEL SETPOINTA
+	final JLabel setLbl = new JLabel();
+	if (!isOnoff()) {
+	setLbl.setText(" - - ");
+	}
+	setLbl.setHorizontalAlignment(SwingConstants.CENTER);
+	setLbl.setFont(new Font("Tahoma", Font.BOLD, 40));
+	panel_2.add(setLbl);
+
+	// LABEL DISPLEJA
+
+	lblNewLabel.setVerticalAlignment(SwingConstants.TOP);
+	GroupLayout gl_panel_4 = new GroupLayout(panel_4);
+	gl_panel_4.setHorizontalGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
+	.addGroup(gl_panel_4.createSequentialGroup().addContainerGap()
+	.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE).addContainerGap(237,
+	Short.MAX_VALUE)));
+
+	gl_panel_4.setVerticalGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
+	.addGroup(gl_panel_4.createSequentialGroup().addContainerGap()
+	.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE).addContainerGap(52,
+	Short.MAX_VALUE)));
+	panel_4.setLayout(gl_panel_4);
+
+	panel_4.add(lblNewLabel);
+	// MINUS
+	final JButton btnBotun_0 = new JButton("  -  ");
+	btnBotun_0.setFocusable(false);
+	btnBotun_0.setBackground(Color.lightGray);
+	btnBotun_0.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	// INFO
+	final JButton btnBotun_1 = new JButton("info");
+	btnBotun_1.setFocusable(false);
+	// SET
+	final JButton btnBotun_2 = new JButton("set");
+	btnBotun_2.setFocusable(false);
+	// PLUS
+	final JButton btnBotun_3 = new JButton("  +  ");
+	btnBotun_3.setFocusable(false);
+	btnBotun_3.setBackground(Color.lightGray);
+	btnBotun_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	// LIGHT
+	/*final JButton btnBotun_4 = new JButton("light");
+	btnBotun_4.setFocusable(false);*/
+
+	// JButton btnBotun_5 = new JButton("defrost");
+	// JButton btnNewButton_6 = new JButton("66666");
+	// JButton btnNewButton_7 = new JButton("/");
+	
+	JLabel jLabelObject = new JLabel();
+	jLabelObject.setIcon(new ImageIcon("Images/allstat_logo.png"));
+
+	panel_3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+	panel_3.add(btnBotun_0);
+	panel_3.add(btnBotun_1);
+	panel_3.add(btnBotun_2);
+	panel_3.add(btnBotun_3);
+	panel_3.add(jLabelObject);
+	
+	//panel_3.add(btnBotun_4); // svjetlo eliminiramo
+	// panel_3.add(btnBotun_5);
+	// panel_3.add(btnNewButton_6);
+	// panel_3.add(btnNewButton_7);
+
+	// PLUS I MINUS
+	btnBotun_0.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent arg0) {
+	if (isOnoff() == true) {
+	double setpoint = Double.parseDouble(setLbl.getText());
+	if (setpoint > -30) {
+	setSetpoint(--setpoint);
+	setLbl.setText(String.valueOf((int) setpoint));
+	}
+	} else {
+	}
+	}
+	});
+	btnBotun_1.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent arg0) {
+	DiaEntry pocetak = new DiaEntry();
+	pocetak.reci("<html>Version 2.0 is for a plus temperature cold room.<br>"
+	+ "By pressing SET you enter a window where you can simulate inputs.<br>"
+	+ "System: plus regimen, dynamic evaporator with an electrical<br>"
+	+ "defrost heater, timed defrosot with shut off determined by<br>"
+	+ "time (10 min) or maximum defrost sensor temperature (18 celsius).<br>"
+	+ "Every full hour the controller writes data to a text file.<br>"
+	+ "Date and time are entered, number of minutes of compressor work per hour,<br>"
+	+ "ambiental and setpoint temperature. To access data turn <br>"
+	+ "the application off and copy the content of datalog.txt file from main folder.<br>"
+	+ "Additional data or logic alterations are easily set up.<br>" + "</html>");
+	}
+	});
+	btnBotun_3.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent arg0) {
+	if (isOnoff() == true) {
+	double setpoint = Double.parseDouble(setLbl.getText());
+	if (setpoint < 30) {
+	setSetpoint(++setpoint);
+	setLbl.setText(String.valueOf((int) setpoint));
+	}
+	} else {
+	}
+	}
+	});
+
+	// SET BOTUN
+	btnBotun_2.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent arg0) {
+	Logread dajsifru = new Logread();
+	dajsifru.procitaj();
+	if (dajsifru.ispravanunos == true) {
+	setSettguishow(true);
+	frmAllstatSettings.setVisible(true);
+
+	}
+
+	}
+	});
+
+	/*btnBotun_4.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent arg0) {
+	if (isSoftsvjetlo() != true) {
+	setSoftsvjetlo(true);
+	} else {
+	setSoftsvjetlo(false);
+	}
+	}
+	});*/
+
+	JButton btnOnOff = new JButton("ON / OFF");
+	btnOnOff.setFocusable(false);
+	panel.add(btnOnOff);
+	frmAllstat.getContentPane().setLayout(groupLayout);
+	frmAllstat.setVisible(true);
+	btnOnOff.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent arg0) {
+
+	if (isOnoff() == false) {
+	setOnoff(true);
+	setLbl.setText(String.valueOf((int) setpoint));
+
+	} else {
+	setOnoff(false);
+	setLbl.setText(" - - ");
+	}
+
+	}
+	});
+	
+	// GLAVNE PROGRAMSKE I LOGIČKE OPERACIJE
+
+	Initializator initialize = new Initializator();
+	initialize.init();
+
+	Dataclass data = new Dataclass();
+
+	data.inputDouble1 = initialize.getInputDouble();
+	data.inputBool1 = initialize.getInputBool();
+	data.settDouble1 = initialize.getSettDouble();
+	data.settBool1 = initialize.getSettBool();
+	data.stringtosend = initialize.getPrikaz();
+
+	// upitnik za ovo dolje? jel duplam doinbackgorund?
+	setPreklopnik(data.inputBool1[0]);
+	setVrata(data.inputBool1[1]);
+	//setSvjetlosklop(data.inputBool1[2]);
+	setAmbijentalna(data.inputDouble1[0]);
+	setDeftemp(data.inputDouble1[1]);
+	
+	setAlarmtemp(data.settDouble1[4]);
+	setAlarmtime(data.settDouble1[5]);
+	setDeftime(data.settDouble1[2]);
+	setSetirandeftemp(data.settDouble1[3]);
+	setSetpoint(data.settDouble1[0]);
+	setDiferencija(data.settDouble1[1]);
+	setPrikaz(data.stringtosend);
+	setSoftsvjetlo(data.settBool1[1]);
+	
+	
+	// SWINGWORKER
+	SwingWorker<Void, Dataclass> worker = new SwingWorker<Void, Dataclass>() {
+
+	@Override
+	protected Void doInBackground() throws Exception {	
+	
+	int chartosend = 0;	
+	setOnoff(false);
+	frmAllstat.setVisible(true);
+	
+	String port = "COM5";
+	
+	
+	Portclass porter = new Portclass(port);	
+	porter.open();	
+	
+	while (fliparound) {
+	
+	if(!isSpoji()){
+	porter.setInBool(false);
+	porter.posalji(2);
+	try {Thread.sleep(450);} catch (Exception e) {System.out.println(e);}
+	porter.close();}
+	
+	//READ DRETVA
+	
+	Thread dretvaRead = new Thread(){
+	@Override public void run() {
+	
+	if (porter.portaccessible(true)){
+	porter.krenichit();	
+	
+	}//end if
+	try {Thread.sleep(100);} catch (Exception e) {System.out.println(e);}
+	};	//run	
+	};
+	dretvaRead.start();// READ DRETVA
+	
+	
+	
+	setPrikaz(initialize.getPrikaz());
+	setSerijaliziraj(false);
+
+	initialize.processlog();	
+
+	data.stringtosend = getPrikaz();
+	data.inputBool1[0] = porter.isDIG1();
+	data.inputBool1[1] = porter.isDIG2();
+	data.settBool1[2] = isSpoji();
+	// data.inputBool1[2] = isSvjetlosklop();
+	data.inputDouble1[0] = porter.getNTC1();
+	data.inputDouble1[1] = porter.getNTC2();
+	
+	data.settDouble1[2] = getDeftime();
+	data.settBool1[0] = isOnoff();
+	data.settBool1[1] = isSoftsvjetlo();
+	data.settDouble1[0] = getSetpoint();
+	data.settDouble1[1] = getDiferencija();
+	data.settDouble1[3] = getSetirandeftemp();
+	data.settDouble1[4] = getAlarmtemp();
+	data.settDouble1[5] = getAlarmtime();
+	
+	//treba poslati i nove varijable u logiku
+
+	initialize.setInputBool(data.inputBool1);// sa
+	// mikrokontrolerom
+	// se miču ća u
+	// logiku
+	initialize.setInputDouble(data.inputDouble1);// sa
+	// mikrokontrolerom
+	// se miču
+	// ća u
+	// logiku
+	initialize.setSettBool(data.settBool1);
+	initialize.setSettDouble(data.settDouble1);
+
+	data.outputBool1 = initialize.getOutputBool();
+
+	if (isSettguishow() == true) {
+
+	setSettguishow(false);
+	// System.out.println(isSettguishow());
+	pokaziset(true);
+
+	} // end if
+	
+	// PIŠI DRETVA
+	
+	chartosend = initialize.getChartosend();
+	
+	
+	if(i!=chartosend){
+	
+	Thread dretvaPis = new Thread(){
+	
+	
+	@Override public void run() {
+	porter.setInBool(false);
+	
+	
+	if (porter.portaccessible(true)){
+	porter.posalji(i);
+	
+	}	//end if	
+	};	//run	
+	};
+	dretvaPis.start();
+	i=chartosend;
+	}// end if
+	
+	
+	// SERIJALIZACIJA
+	if (isSerijaliziraj() == true) {
+	System.out.println(isSerijaliziraj());
+	data.inputBool1[0] = isPreklopnik();
+	data.inputBool1[1] = isVrata();
+	data.inputBool1[2] = isSvjetlosklop();
+	data.inputDouble1[0] = getAmbijentalna();
+	data.inputDouble1[1] = getDeftemp();
+	data.settDouble1[2] = getDeftime();
+	data.settBool1[0] = isOnoff();// ovo možda i ne treba
+	// serijalizirat
+	data.settDouble1[0] = getSetpoint();
+	data.settDouble1[1] = getDiferencija();
+	data.settDouble1[3] = getSetirandeftemp();
+	data.settDouble1[4] = getAlarmtemp();
+	data.settDouble1[5] = getAlarmtime();// Ako nije OFF!!!
+
+	initialize.serijalizirajsettDouble(data.settDouble1);
+	initialize.serijalizirajsettBool(data.settBool1);
+	initialize.serijalizirajanalDouble(data.inputDouble1);
+	initialize.serijalizirajanalBool(data.inputBool1);
+
+	try {
+	Thread.sleep(3000);
+	} catch (InterruptedException e) {
+	System.out.println("sleep interrupted in serialization");
+	}
+	setSerijaliziraj(false);
+	System.out.println(isSerijaliziraj());
+	}
+	publish(data);
+	}
+	porter.close();
+	return null;
+	}
+
+	@Override
+	protected void process(List<Dataclass> klasa) {
+	
+	
+	
+	// do a lot of things in background and then pass a lot of
+	// arguments for gui updates
+	Dataclass xxx = klasa.get(getProgress());
+
+	lblNewLabel.setText(xxx.stringtosend);
+	// System.out.println(xxx.stringtosend);
+	setPreklopnik(xxx.inputBool1[0]);
+	setVrata(xxx.inputBool1[1]);
+	//setSvjetlosklop(xxx.inputBool1[2]);
+	setAmbijentalna(xxx.inputDouble1[0]);
+	setDeftemp(xxx.inputDouble1[1]);
+	
+	
+	setDeftime(xxx.settDouble1[2]);
+	setSetpoint(xxx.settDouble1[0]);
+	setDiferencija(xxx.settDouble1[1]);
+	setOnoff(xxx.settBool1[0]);
+
+	// setTemp(String.valueOf(getAmbijentalna()));
+	label_1.setText(String.valueOf(xxx.inputDouble1[0]));// ambi
+	lblAMBI.setText(String.valueOf(xxx.inputDouble1[0]));// ambi
+	label2.setText(String.valueOf(xxx.inputDouble1[1]));// deftemp
+	label_deftime.setText(String.valueOf((int) xxx.settDouble1[2]));// deftime
+	label_diff.setText(String.valueOf(xxx.settDouble1[1]));// diferencija
+	lblNewLabel6.setText(String.valueOf(xxx.inputDouble1[1]));//defrost sonda
+	lbl_deftemp.setText(String.valueOf(xxx.settDouble1[3]));// defrost set temperatura
+	lblNewLabel_3.setText(String.valueOf(xxx.settDouble1[4]));// alarm temp
+	lblalarmtime.setText(String.valueOf(xxx.settDouble1[5]));// alarm time
+	
+	
+	if (xxx.inputBool1[1]) {
+	rdbtnVrata.setSelected(true);
+	} else {
+	rdbtnVrata.setSelected(false);
+	}
+	/*if (xxx.inputBool1[2]) {
+	rdbtnRasvjeta.setSelected(true);
+	} else {
+	rdbtnRasvjeta.setSelected(false);
+	}*/
+	
+	if (xxx.inputBool1[0]) {
+	rdbtnPreklopnikOsigura.setSelected(true);
+	} else {
+	rdbtnPreklopnikOsigura.setSelected(false);
+	}
+
+	if (xxx.outputBool1[0]) {
+	rdbtnKompresor.setSelected(true);
+	} else {
+	rdbtnKompresor.setSelected(false);
+	}
+	if (xxx.outputBool1[1]) {
+	rdbtnMagnetniVentil.setSelected(true);
+	} else {
+	rdbtnMagnetniVentil.setSelected(false);
+	}
+	if (xxx.outputBool1[2]) {
+	rdbtnVentilatorIsparivaa.setSelected(true);
+	} else {
+	rdbtnVentilatorIsparivaa.setSelected(false);
+	}
+	if (xxx.outputBool1[3]) {
+	rdbtnGrijaIsparivaa.setSelected(true);
+	} else {
+	rdbtnGrijaIsparivaa.setSelected(false);
+	}
+	if (xxx.outputBool1[4]) {
+	rdbtnRasvjeta_1.setSelected(true);
+	} else {
+	rdbtnRasvjeta_1.setSelected(false);
+	}
+	if (xxx.outputBool1[5]) {
+	rdbtnNewRadioButton.setSelected(true);
+	} else {
+	rdbtnNewRadioButton.setSelected(false);
+	}
+
+	}
+
+	};
+	worker.execute();
+
+	}
+
+	public void pokaziset(boolean dajga) {
+
+	}
+
+	public boolean isSerijaliziraj() {
+	return serijaliziraj;
+	}
+
+	public void setSerijaliziraj(boolean serijaliziraj) {
+	this.serijaliziraj = serijaliziraj;
+	}
+
+	public double getDiferencija() {
+	return diferencija;
+	}
+
+	public void setDiferencija(double diferencija) {
+	this.diferencija = diferencija;
+	}
+
+	public double getDeftime() {
+	return deftime;
+	}
+
+	public void setDeftime(double deftime) {
+	this.deftime = deftime;
+	}
+
+	public boolean isPreklopnik() {
+	return preklopnik;
+	}
+
+	public void setPreklopnik(boolean preklopnik) {
+	this.preklopnik = preklopnik;
+	}
+
+	public boolean isVrata() {
+	return vrata;
+	}
+
+	public void setVrata(boolean vrata) {
+	this.vrata = vrata;
+	}
+
+	public boolean isSvjetlosklop() {
+	return svjetlosklop;
+	}
+
+	public void setSvjetlosklop(boolean svjetlosklop) {
+	this.svjetlosklop = svjetlosklop;
+	}
+
+	public boolean isMagnet() {
+	return magnet;
+	}
+
+	public void setMagnet(boolean magnet) {
+	this.magnet = magnet;
+	}
+
+	public boolean isVentilator() {
+	return ventilator;
+	}
+
+	public void setVentilator(boolean ventilator) {
+	this.ventilator = ventilator;
+	}
+
+	public boolean isGrijac() {
+	return grijac;
+	}
+
+	public void setGrijac(boolean grijac) {
+	this.grijac = grijac;
+	}
+
+	public boolean isSvjetlo() {
+	return svjetlo;
+	}
+
+	public void setSvjetlo(boolean svjetlo) {
+	this.svjetlo = svjetlo;
+	}
+
+	public boolean isAlarm() {
+	return alarm;
+	}
+
+	public void setAlarm(boolean alarm) {
+	this.alarm = alarm;
+	}
+
+	public boolean isKompr() {
+	return kompr;
+	}
+
+	public void setKompr(boolean kompr) {
+	this.kompr = kompr;
+	}
+
+	public double getDeftemp() {
+	return deftemp;
+	}
+
+	public void setDeftemp(double deftemp) {
+	this.deftemp = deftemp;
+	}
+
+	/*
+	 * public boolean isVidljiv() { return vidljiv; }
+	 * 
+	 * public void setVidljiv(boolean vidljiv) { this.vidljiv = vidljiv; }
+	 */
+
+	public double getAmbijentalna() {
+	return ambijentalna;
+	}
+
+	public void setAmbijentalna(double ambijentalna) {
+	this.ambijentalna = ambijentalna;
+	}
+
+	// od guiglavni:
+	public void setTemp(String temp) {
+	this.temp = temp;
+	}
+
+	public String getTemp() {
+	return temp;
+	}
+
+	public void setPrikaz(String prikaz) {
+	this.prikaz = prikaz;
+	// System.out.println(prikaz);
+	}
+
+	public String getPrikaz() {
+	return prikaz;
+	}
+
+	public boolean isOnoff() {
+	return onoff;
+	}
+
+	public void setOnoff(boolean onoff) {
+	this.onoff = onoff;
+	}
+
+	public boolean isSettguishow() {
+	return settguishow;
+	}
+
+	public void setSettguishow(boolean settguishow) {
+	this.settguishow = settguishow;
+	}
+
+	public double getSetpoint() {
+	return setpoint;
+	}
+
+	public void setSetpoint(double setpoint) {
+	this.setpoint = setpoint;
+	}
+
+	public boolean isSoftsvjetlo() {
+	return softsvjetlo;
+	}
+
+	public void setSoftsvjetlo(boolean softsvjetlo) {
+	this.softsvjetlo = softsvjetlo;
+	}
+	
+	public boolean isSpoji() {
+	return spoji;
+	}
+
+	public void setSpoji(boolean spoji) {
+	this.spoji = spoji;
+	}
+	
+	public double getSetirandeftemp() {
+	return setirandeftemp;
+	}
+
+	public void setSetirandeftemp(double setirandeftemp) {
+	this.setirandeftemp = setirandeftemp;
+	}
+	public double getAlarmtemp() {
+	return alarmtemp;
+	}
+
+	public void setAlarmtemp(double alarmtemp) {
+	this.alarmtemp = alarmtemp;
+	}
+
+	public double getAlarmtime() {
+	return alarmtime;
+	}
+
+	public void setAlarmtime(double alarmtime) {
+	this.alarmtime = alarmtime;
+	}
+
+}
+----
+package comp_nomail;
+
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+
+import com.fazecast.jSerialComm.SerialPort;
+
+public class Portclass {
+	
+	String portname;
+	SerialPort port;
+	
+	double NTC1;
+	double NTC2;
+	boolean DIG1;
+	boolean DIG2;
+	boolean DIG3;
+	boolean DIG4;
+	
+	public Portclass(String port){
+	this.portname = port;
+	}
+	
+	
+	
+	private boolean inBool;
+	public boolean isInBool() {
+	return inBool;
+	}
+
+	public void setInBool(boolean InBool) {
+	inBool = InBool;
+	}
+	public synchronized boolean portaccessible(boolean andfree){
+	//try {Thread.sleep(100); } catch(Exception e) {}
+	if (andfree){setInBool(true);}else{setInBool(false);};
+	//try {Thread.sleep(100); } catch(Exception e) {}
+	
+	if(port.isOpen()&&isInBool()){return true;}else{return false;}
+	}
+	
+	
+	
+	public void open(){	
+	
+	port = SerialPort.getCommPort(portname);
+	port.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER,0,0);	
+	port.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
+	port.openPort();
+	try {Thread.sleep(900); } catch(Exception e) {}
+	port.setBaudRate(9600);
+	//System.out.println(port.getBaudRate());	
+	
+	
+	}//openport
+	
+	public void close(){
+	port.closePort();
+	}// closeport
+	
+	public void posalji(int charin){
+	
+	PrintWriter output = new PrintWriter(port.getOutputStream());	
+	output.write(charin);
+	try {Thread.sleep(150); } catch(Exception e) {}
+	output.flush();
+	//System.out.println("char poslan");	
+	setInBool(true);
+	
+	
+
+	}// end posalji
+	
+	public synchronized void krenichit(){
+	
+	if(port.openPort() == false) {
+	System.err.println("Unable to open the port.");
+	return;
+	}
+	if (portaccessible(true)){	
+	try(Scanner s = new Scanner(port.getInputStream())){
+	try {Thread.sleep(450); } catch(Exception e) {}
+	if(s.hasNextLine()) {
+	String line = s.nextLine();
+	//System.out.println("Line of text from serial port: " + line);
+	//finally {};
+	
+	parser(line);
+	
+	}	//if
+	}//try	
+	}
+	
+	}
+	
+	
+	// PARSIRANJE VRIJEDNOSTI I POSTAVLJANJE SETTERA
+	public void parser(String s) {
+	
+	char[] spojeni;
+	spojeni = s.toCharArray();
+	
+	char[] prvi = new char [4];
+	char[] drugi = new char[4];
+	
+	prvi[0] = spojeni [0];
+	prvi[1] = spojeni [1];
+	prvi[2] = spojeni [2];
+	prvi[3] = spojeni [3];
+	
+	double prvasonda = Double.parseDouble(String.valueOf(prvi));
+	
+	drugi[0] = spojeni[5];
+	drugi[1] = spojeni[6];
+	drugi[2] = spojeni[7];
+	drugi[3] = spojeni[8];
+	
+	double drugasonda = Double.parseDouble(String.valueOf(drugi));
+	
+        setNTC1(prvasonda);
+        setNTC2(drugasonda);
+        
+        if (spojeni[10]=='1') {setDIG1(true);}else{setDIG1(false);}
+        if (spojeni[12]=='1') {setDIG2(true);}else{setDIG2(false);}
+        if (spojeni[14]=='1') {setDIG3(true);}else{setDIG3(false);}
+        if (spojeni[16]=='1') {setDIG4(true);}else{setDIG4(false);}  
+        
+       
+	    
+	}
+	
+	public synchronized double getNTC1() {
+	return NTC1;
+	}
+
+	public synchronized void setNTC1(double nTC1) {
+	double temp1 = ((double)(nTC1/10-273.15));
+	
+	NTC1 = Math.round(((double)temp1) * 10.0) / 10.0;
+	 
+	}
+
+	public synchronized double getNTC2() {
+	return NTC2;
+	}
+
+	public synchronized void setNTC2(double nTC2) {	
+	double temp1 = ((double)(nTC2/10-273.15));
+	NTC2 = Math.round(((double)temp1) * 10.0) / 10.0;
+	 try {Thread.sleep(500); } catch(Exception e) {}
+	}
+
+	public synchronized boolean isDIG1() {
+	return DIG1;
+	}
+
+	public synchronized void setDIG1(boolean dIG1) {
+	DIG1 = dIG1;
+	}
+
+	public synchronized boolean isDIG2() {
+	return DIG2;
+	}
+
+	public synchronized void setDIG2(boolean dIG2) {
+	DIG2 = dIG2;
+	}
+
+	public synchronized boolean isDIG3() {
+	return DIG3;
+	}
+
+	public synchronized void setDIG3(boolean dIG3) {
+	DIG3 = dIG3;
+	}
+
+	public synchronized boolean isDIG4() {
+	return DIG4;
+	}
+
+	public synchronized void setDIG4(boolean dIG4) {
+	DIG4 = dIG4;
+	}
+
+}
